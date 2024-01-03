@@ -1,0 +1,12 @@
+{% extends "Board_games/base.html" %}
+<title>{{ game.title }}</title>
+
+{% block content %}
+    <h1>{{ game.title }}</h1>
+    <ul>
+        <li><strong>Autor:</strong> {{ game.author }}</li>
+        <li><strong>Wydawca:</strong> {{ game.publisher }}</li>
+        <li><strong>Liczba graczy:</strong> {{ game.min_players }} - {{ game.max_players }}</li>
+        <li><strong>Czas gry:</strong> {{ game.time }}</li>
+    </ul>
+{% endblock %}

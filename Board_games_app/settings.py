@@ -1,3 +1,4 @@
+
 """
 Django settings for Board_games_app project.
 
