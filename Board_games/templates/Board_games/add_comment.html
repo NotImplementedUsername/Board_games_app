@@ -1,0 +1,17 @@
+{% extends "Board_games/base.html" %}
+
+<title> Dodawanie komentarza </title>
+
+{% block content %}
+    <h1>Dodawanie komentarza</h1>
+    <h2>Gra: {{ game.title }}</h2>
+    {% if user.is_authenticated %}
+        <form method="post" action="">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit", name ="add">Dodaj komentarz</button>
+        </form>
+    {% else %}
+        Nie masz uprawnień do korzystania z tej funkcji
+    {% endif %}
+{% endblock %}

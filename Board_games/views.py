@@ -1,9 +1,10 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from .forms import AddGameForm, SearchGameForm, RegisterForm
-from .models import BoardGames, GamesCollection
+from .forms import AddGameForm, SearchGameForm, RegisterForm, AddCommentForm
+from .models import BoardGames, Comments
 from django.urls import reverse
 from django.db.models import Avg
+from datetime import datetime
 
 # Create your views here.
 def home(response):
@@ -65,3 +66,22 @@ def register(response):
 
 def games_collection(response):
     return render(response, "Board_games/games_collection.html", )
+
+def add_comment(response, game_id):
+    if response.method == "POST":
+        form = AddCommentForm(response.POST)
+
+        if form.is_valid():
+            rating = form.cleaned_data['rating']
+            comment = form.cleaned_data['comment']
+
+            new_comment = Comments(comment=comment, rating=rating, user=response.user, game_id=game_id,
+                                   comment_date=datetime.today().strftime('%Y-%m-%d'))
+            new_comment.save()
+
+            return HttpResponseRedirect("/board_games/%i" %game_id)
+    else:
+        form = AddCommentForm()
+
+    game = BoardGames.objects.get(id=game_id)
+    return render(response, "Board_games/add_comment.html", {"form": form, "game": game})

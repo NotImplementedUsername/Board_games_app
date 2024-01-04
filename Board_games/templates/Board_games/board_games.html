@@ -10,6 +10,13 @@
         <li><strong>Czas gry:</strong> {{ game.time }}</li>
     </ul>
 
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'add_comment' game_id=game.id %}">
+            {% csrf_token %}
+            <button type="submit">Dodaj opinię</button>
+        </form>
+    {% endif %}
+
     <h2>Opinie</h2>
     <ul>
         {% for comment in game.comments_set.all %}
