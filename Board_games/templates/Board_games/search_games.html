@@ -7,7 +7,7 @@
     {% else %}
         <ul>
         {% for game in list %}
-            <li>{{ game.title }}</li>
+            <li><a href="{% url 'board_games' id=game.id %}">{{ game.title }}</a></li>
         {% endfor %}
         </ul>
     {% endif %}
