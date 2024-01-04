@@ -1,0 +1,14 @@
+{% extends "Board_games/base.html" %}
+
+{% block content %}
+    <h2>Znalezione Gry</h2>
+    {% if list.count == 0 %}
+        Nie znaleziono żadnych gier
+    {% else %}
+        <ul>
+        {% for game in list %}
+            <li>{{ game.title }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
