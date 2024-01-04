@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from .forms import AddGameForm, SearchGameForm
-from .models import BoardGames
+from django.shortcuts import render, redirect
+from .forms import AddGameForm, SearchGameForm, RegisterForm
+from .models import BoardGames, GamesCollection
 from django.urls import reverse
 from django.db.models import Avg
 
@@ -47,7 +47,21 @@ def search_game(response, search_phrase):
     result = BoardGames.objects.filter(title__icontains=search_phrase).values('id','title')
     return render(response, "Board_games/search_games.html", {"list": result})
 
-def top_board_games(response):
+def top_games(response):
     result = (BoardGames.objects.annotate(avg_rating=Avg('comments__rating')).values(
         'id','title', 'avg_rating').order_by('-avg_rating'))
-    return render(response, "Board_games/top_board_games.html", {"list": result})
+    return render(response, "Board_games/top_games.html", {"list": result})
+
+def register(response):
+    if response.method == 'POST':
+        form = RegisterForm(response.POST)
+        if form.is_valid():
+            form.save()
+        return redirect('/')
+    else:
+        form = RegisterForm()
+
+    return render(response, "Board_games/register.html", {"form":form})
+
+def games_collection(response):
+    return render(response, "Board_games/games_collection.html", )

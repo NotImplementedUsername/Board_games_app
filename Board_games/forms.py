@@ -5,10 +5,11 @@ from .models import Users
 
 
 class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField()
 
     class Meta:
         model = Users
-        fields = ("nickname", "role",)
+        fields = ("nickname", "role", )
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -17,6 +18,12 @@ class CustomUserChangeForm(UserChangeForm):
         model = Users
         fields = ("nickname", "role",)
 
+class RegisterForm(UserCreationForm):
+
+    class Meta:
+        model = Users
+        fields = ["nickname", "first_name", "last_name", "email", "password1", "password2"]
+        labels = {"nickname": "Nazwa użytkownika", "first_name": "Imię", "last_name": "Nazwisko"}
 
 class AddGameForm(forms.Form):
     title = forms.CharField(label="Tytuł", max_length=200, required=True)

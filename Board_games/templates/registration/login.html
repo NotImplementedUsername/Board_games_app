@@ -1,0 +1,13 @@
+{% extends "Board_games/base.html" %}
+
+<title>Logowanie</title>
+
+{% block content %}
+    <h1>Logowanie</h1>
+    <form method="post", class="from-group">
+        {% csrf_token %}
+        {{ form }}
+    <button type="submit" class="btn btn-success">Zaloguj</button>
+    <p> <a href="/register">Utwórz nowe konto</a></p>
+    </form>
+{% endblock %}

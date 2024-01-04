@@ -1,0 +1,14 @@
+{% extends "Board_games/base.html" %}
+
+{% block content %}
+    <h1>Moja kolekcja gier</h1>
+    {% if list.count == 0 %}
+        Nie znaleziono żadnych gier
+    {% else %}
+        <ul>
+        {% for collection in user.gamescollection_set.all %}
+            <li><a href="{% url 'board_games' id=collection.game_id %}">{{ collection.game.title }}</a>, Data pozyskania:{{ collection.purchase_date }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

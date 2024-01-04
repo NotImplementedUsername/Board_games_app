@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from Board_games import views
 
@@ -25,5 +25,8 @@ urlpatterns = [
     path("board_games/<int:id>/", views.board_games, name="board_games"),
     path("add_game/", views.add_game, name="add_game"),
     path("search_game/<str:search_phrase>", views.search_game, name="search_game"),
-    path("top_board_games", views.top_board_games, name="top_board_games")
+    path("top_games", views.top_games, name="top_games"),
+    path("register/", views.register, name="register"),
+    path("", include("django.contrib.auth.urls")),
+    path("games_collection/", views.games_collection, name="games_collection")
 ]
