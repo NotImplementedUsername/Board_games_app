@@ -25,3 +25,6 @@ class AddGameForm(forms.Form):
     min_players = forms.IntegerField(label="Minimalna liczba graczy", required=False)
     max_players = forms.IntegerField(label="Maksymalna liczba graczy", required=False)
     time = forms.CharField(label="Czas gry", max_length=10, required=False)
+
+class SearchGameForm(forms.Form):
+    search_phrase = forms.CharField(label="Nazwa gry", max_length=200, required=True)
