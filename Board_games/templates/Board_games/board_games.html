@@ -9,4 +9,13 @@
         <li><strong>Liczba graczy:</strong> {{ game.min_players }} - {{ game.max_players }}</li>
         <li><strong>Czas gry:</strong> {{ game.time }}</li>
     </ul>
+
+    <h2>Opinie</h2>
+    <ul>
+        {% for comment in game.comments_set.all %}
+            <li><strong>{{ comment.user.nickname }}: {{ comment.rating }} </strong><br>
+                {{ comment.comment }}</li>
+        {% endfor %}
+    </ul>
+
 {% endblock %}
