@@ -1,11 +1,13 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .forms import AddGameForm, SearchGameForm
 from .models import BoardGames
 from django.urls import reverse
 from django.db.models import Avg
 
 # Create your views here.
+
+
 def home(response):
     if response.method == 'POST':
         form = SearchGameForm(response.POST)
@@ -18,9 +20,12 @@ def home(response):
 
     return render(response, "Board_games/home.html", {"form": form})
 
+
 def board_games(response, id):
-    game = BoardGames.objects.get(id=id)
+    game = get_object_or_404(BoardGames, id=id)
+
     return render(response, "Board_games/board_games.html", {"game": game})
+
 
 def add_game(response):
     if response.method == "POST":
@@ -43,11 +48,13 @@ def add_game(response):
         form = AddGameForm()
     return render(response, "Board_games/add_game.html", {"form": form})
 
+
 def search_game(response, search_phrase):
-    result = BoardGames.objects.filter(title__icontains=search_phrase).values('id','title')
+    result = BoardGames.objects.filter(title__icontains=search_phrase).values('id', 'title')
     return render(response, "Board_games/search_games.html", {"list": result})
+
 
 def top_board_games(response):
     result = (BoardGames.objects.annotate(avg_rating=Avg('comments__rating')).values(
-        'id','title', 'avg_rating').order_by('-avg_rating'))
+        'id', 'title', 'avg_rating').order_by('-avg_rating'))
     return render(response, "Board_games/top_board_games.html", {"list": result})

@@ -20,10 +20,9 @@ from django.urls import path
 from Board_games import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path("", views.home, name="home"),
-    path("board_games/<int:id>/", views.board_games, name="board_games"),
-    path("add_game/", views.add_game, name="add_game"),
+    path("board_games/<int:id>", views.board_games, name="board_games"),
+    path("add_game", views.add_game, name="add_game"),
     path("search_game/<str:search_phrase>", views.search_game, name="search_game"),
     path("top_board_games", views.top_board_games, name="top_board_games")
 ]
