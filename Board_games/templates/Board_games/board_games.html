@@ -2,27 +2,33 @@
 <title>{{ game.title }}</title>
 
 {% block content %}
-    <h1>{{ game.title }}</h1>
-    <ul>
-        <li><strong>Autor:</strong> {{ game.author }}</li>
-        <li><strong>Wydawca:</strong> {{ game.publisher }}</li>
-        <li><strong>Liczba graczy:</strong> {{ game.min_players }} - {{ game.max_players }}</li>
-        <li><strong>Czas gry:</strong> {{ game.time }}</li>
+    <h2>{{ game.title }}</h2>
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item"><strong>Autor:</strong> {{ game.author }}</li>
+        <li class="list-group-item"><strong>Wydawca:</strong> {{ game.publisher }}</li>
+        <li class="list-group-item"><strong>Liczba graczy:</strong> {{ game.min_players }} - {{ game.max_players }}</li>
+        <li class="list-group-item"><strong>Czas gry:</strong> {{ game.time }}</li>
     </ul>
 
     {% if user.is_authenticated %}
         <form method="post" action="{% url 'add_comment' game_id=game.id %}">
             {% csrf_token %}
-            <button type="submit">Dodaj opinię</button>
+            <button type="submit" class="btn btn-primary mt-3 mb-3">Dodaj opinię</button>
         </form>
     {% endif %}
 
-    <h2>Opinie</h2>
-    <ul>
-        {% for comment in game.comments_set.all %}
-            <li><strong>{{ comment.user.nickname }}: {{ comment.rating }} </strong><br>
-                {{ comment.comment }}</li>
-        {% endfor %}
-    </ul>
+    <div class="mb-6"></div>
 
+    <h2>Opinie</h2>
+    <div class="list-group">
+        {% for comment in game.comments_set.all|dictsortreversed:"comment_date" %}
+            <a class="list-group-item list-group-item-action" aria-current="true">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ comment.user.nickname }}: <span class="badge bg-primary rounded-pill">{{ comment.rating }}</span></h5>
+                    <small>{{ comment.comment_date }}</small>
+                </div>
+                <p class="mb-1">{{ comment.comment }}</p>
+            </a>
+        {% endfor %}
+    </div>
 {% endblock %}

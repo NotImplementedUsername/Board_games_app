@@ -1,14 +1,16 @@
 {% extends "Board_games/base.html" %}
 
 {% block content %}
-    <h1>Znalezione Gry</h1>
+    <h2>Znalezione Gry</h2>
     {% if list.count == 0 %}
         Nie znaleziono żadnych gier
     {% else %}
-        <ul>
+        <div class="list-group col-sm-4">
         {% for game in list %}
-            <li><a href="{% url 'board_games' id=game.id %}">{{ game.title }}</a></li>
+          <a href="{% url 'board_games' id=game.id %}" class="list-group-item list-group-item-action">
+            {{ game.title }}
+          </a>
         {% endfor %}
-        </ul>
+        </div>
     {% endif %}
 {% endblock %}

@@ -2,11 +2,13 @@
 
 <title>Utwórz nowe konto</title>
 
+{% load crispy_forms_tags %}
+
 {% block content %}
-    <h1>Rejestracja</h1>
+    <h2>Rejestracja</h2>
     <form method="POST" class="form-group">
         {% csrf_token %}
-        {{ form }}
-        <button type="submit" class="btn btn-success">Zarejestruj</button>
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Zarejestruj</button>
     </form>
 {% endblock %}

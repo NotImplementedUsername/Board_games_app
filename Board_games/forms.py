@@ -37,5 +37,5 @@ class SearchGameForm(forms.Form):
     search_phrase = forms.CharField(label="Nazwa gry", max_length=200, required=True)
 
 class AddCommentForm(forms.Form):
-    rating = forms.IntegerField(label="Ocena w skali 1-10", required=False, min_value=1, max_value=10)
-    comment = forms.CharField(label="Opis", max_length=1000)
+    rating = forms.IntegerField(label="Ocena w skali 1-10", required=True, min_value=1, max_value=10)
+    comment = forms.CharField(label="Opis", max_length=1000, required=False)

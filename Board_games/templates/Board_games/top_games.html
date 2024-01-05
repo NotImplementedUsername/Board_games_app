@@ -1,10 +1,18 @@
 {% extends "Board_games/base.html" %}
 
+
 {% block content %}
-    <h1>Ranking gier</h1>
-    <ol>
-    {% for game in list %}
-        <li ><a href="{% url 'board_games' id=game.id %}">{{ game.title }}</a> {{ game.avg_rating|floatformat:1 }}</li>
-    {% endfor %}
+    <h2>Ranking gier</h2>
+    <ol class="list-group list-group-numbered">
+        {% for game in list %}
+            <li class="list-group-item d-flex justify-content-between align-items-start col-sm-4">
+                <div class="ms-2 me-auto" >
+                      <div class="fw-bold" >
+                          <a href="{% url 'board_games' id=game.id %}">{{ game.title }}</a>
+                      </div>
+                </div>
+                <span class="badge bg-primary rounded-pill">{{ game.avg_rating|floatformat:1 }}</span>
+            </li>
+        {% endfor %}
     </ol>
 {% endblock %}
