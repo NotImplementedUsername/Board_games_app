@@ -1,10 +1,11 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from .forms import AddGameForm, SearchGameForm, RegisterForm, AddCommentForm
-from .models import BoardGames, Comments
+from .models import BoardGames, Comments, GamesCollection
 from django.urls import reverse
 from django.db.models import Avg
 from datetime import datetime
+import json
 
 # Create your views here.
 def home(response):
@@ -21,7 +22,10 @@ def home(response):
 
 def board_games(response, id):
     game = BoardGames.objects.get(id=id)
-    return render(response, "Board_games/board_games.html", {"game": game})
+    if response.user.is_authenticated:
+        is_game_in_collection = response.user.gamescollection_set.filter(game_id=game.id).exists()
+        return render(response, "Board_games/board_games.html", {"game": game, "is_game_in_collection": is_game_in_collection})
+    return render(response, "Board_games/board_games.html",{"game": game})
 
 def add_game(response):
     if response.method == "POST":
@@ -85,3 +89,33 @@ def add_comment(response, game_id):
 
     game = BoardGames.objects.get(id=game_id)
     return render(response, "Board_games/add_comment.html", {"form": form, "game": game})
+
+
+def add_to_collection(response, game_id):
+    if response.method == "POST":
+        if response.user.is_authenticated:
+            if response.user.gamescollection_set.filter(game_id=game_id).exists():
+                return render(response, 'Board_games/error.html', {"message": "Masz już tę grę w kolekcji"})
+            else:
+                new_collection = GamesCollection(game_id=game_id, user_id=response.user.id,
+                                                 purchase_date=datetime.today().strftime('%Y-%m-%d'))
+                new_collection.save()
+                return HttpResponseRedirect("/board_games/%i" %game_id)
+
+        return render(response, 'Board_games/error.html', {"message": "Najpierw musisz się zalogować"})
+    return render(response, 'Board_games/error.html', {"message": "Nie masz dostępu do tej strony"})
+
+
+def error(response, message):
+    return render(response, "Board_games/error.html", {"message": message})
+
+def delete_comment(request, comment_id):
+    if request.method == 'POST':
+        try:
+            comment = Comments.objects.get(id=comment_id)
+            comment.delete()
+            return JsonResponse({'success': True})
+        except Comments.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Comment does not exist'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'})

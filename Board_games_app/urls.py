@@ -29,5 +29,9 @@ urlpatterns = [
     path("register/", views.register, name="register"),
     path("", include("django.contrib.auth.urls")),
     path("games_collection/", views.games_collection, name="games_collection"),
-    path("add_comment/<int:game_id>", views.add_comment, name="add_comment")
+    path("add_comment/<int:game_id>", views.add_comment, name="add_comment"),
+    path('add_to_collection/<int:game_id>/', views.add_to_collection, name='add_to_collection'),
+    path('error/', views.error, name='error'),
+    path('delete_comment/<int:comment_id>/', views.delete_comment, name='delete_comment'),
+
 ]
