@@ -2,20 +2,114 @@
 <title>{{ game.title }}</title>
 
 {% block content %}
-    <h1>{{ game.title }}</h1>
-    <ul>
-        <li><strong>Autor:</strong> {{ game.author }}</li>
-        <li><strong>Wydawca:</strong> {{ game.publisher }}</li>
-        <li><strong>Liczba graczy:</strong> {{ game.min_players }} - {{ game.max_players }}</li>
-        <li><strong>Czas gry:</strong> {{ game.time }}</li>
+    <h2>{{ game.title }}</h2>
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item"><strong>Autor:</strong> {{ game.author }}</li>
+        <li class="list-group-item"><strong>Wydawca:</strong> {{ game.publisher }}</li>
+        <li class="list-group-item"><strong>Liczba graczy:</strong> {{ game.min_players }} - {{ game.max_players }}</li>
+        <li class="list-group-item"><strong>Czas gry:</strong> {{ game.time }}</li>
     </ul>
+
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'add_to_collection' game_id=game.id %}">
+            {% csrf_token %}
+            <div style="display: inline-block;">
+                <button class="btn btn-primary mt-3 mb-3 {% if is_game_in_collection %}disabled-button{% endif %}" type="submit" {% if is_game_in_collection %}disabled{% endif %} data-message="You already have this game in your collection">
+                    Dodaj do kolekcji
+                </button>
+                {% if is_game_in_collection %}
+                    <p class="disabled-message" style="display: inline-block; margin-left: 5px; color: red">Masz już tę grę w kolekcji</p>
+                {% endif %}
+            </div>
+        </form>
+
+        <form method="post" action="{% url 'add_comment' game_id=game.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary mt-3 mb-3">Dodaj opinię</button>
+        </form>
+    {% endif %}
+
+    <div class="mb-6"></div>
 
     <h2>Opinie</h2>
-    <ul>
-        {% for comment in game.comments_set.all %}
-            <li><strong>{{ comment.user.nickname }}: {{ comment.rating }} </strong><br>
-                {{ comment.comment }}</li>
-        {% endfor %}
-    </ul>
+<div class="list-group">
+    {% for comment in game.comments_set.all|dictsortreversed:"comment_date" %}
+       <a class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#exampleModal" data-comment-id="{{ comment.id }}"  data-nickname="{{ comment.user.nickname }}" aria-current="true">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ comment.user.nickname }}: <span class="badge bg-primary rounded-pill">{{ comment.rating }}</span></h5>
+                <small>{{ comment.comment_date }}</small>
+            </div>
+            <p class="mb-1">{{ comment.comment }}</p>
+        </a>
+    {% endfor %}
+</div>
+
+    {% if user.is_authenticated %}
+        {% if user.role_id == 2 %}
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Usuwanie opinii</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body" id="commentModalBody">
+                    <!-- Comment details will be dynamically inserted here -->
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                    <button type="button" class="btn btn-danger" id="deleteCommentBtn">Usuń</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    var commentModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+    var commentItems = document.querySelectorAll('.list-group-item');
+
+    commentItems.forEach(function (item) {
+        item.addEventListener('click', function () {
+            var commentId = item.getAttribute('data-comment-id');
+            var nickname = item.getAttribute('data-nickname');
+
+            var commentBody = "Czy na pewno chcesz usunąć opinię użytkownika " + nickname + "?";
+            document.getElementById('commentModalBody').innerHTML = commentBody;
+
+            // Add a click event listener to the delete button
+            document.getElementById('deleteCommentBtn').addEventListener('click', function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/delete_comment/' + commentId + '/');
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    if (data.success) {
+                        // Comment successfully deleted
+                        // Optionally, you can refresh the page or update the UI here
+                        location.reload();  // This will refresh the page
+                    }
+                }
+                // Close the modal after the action is performed
+                commentModal.hide();
+            };
+
+                var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                xhr.send(JSON.stringify({ comment_id: commentId }));
+            });
+            // Show the Bootstrap modal
+            commentModal.show();
+        });
+    });
+});
+</script>
 
 {% endblock %}
+

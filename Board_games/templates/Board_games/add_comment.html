@@ -1,0 +1,18 @@
+{% extends "Board_games/base.html" %}
+{% load crispy_forms_filters %}
+
+<title> Dodawanie komentarza </title>
+
+{% block content %}
+    <h2>Dodawanie komentarza</h2>
+    <h3>Gra: {{ game.title }}</h3>
+    {% if user.is_authenticated %}
+        <form method="post" action="">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit", name ="add" class="btn btn-primary">Dodaj komentarz</button>
+        </form>
+    {% else %}
+        Nie masz uprawnień do korzystania z tej funkcji
+    {% endif %}
+{% endblock %}

@@ -1,12 +1,23 @@
-{% extends "base.html" %}
+{% extends "Board_games/base.html" %}
+{% load crispy_forms_filters %}
 
 <title> Dodawanie gry </title>
 
+{% load crispy_forms_tags %}
+
 {% block content %}
-    <h1>Dodawanie gry</h1>
-    <form method="post" action="/add_game/">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit", name ="add">Dodaj grę</button>
-    </form>
+    <h2>Dodawanie gry</h2>
+    {% if user.role_id == 2 %}
+        <form method="POST" action="/add_game/" class="form-group">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <button type="submit", name ="add" class="btn btn-primary">Dodaj grę</button>
+                </div>
+            </div>
+        </form>
+    {% else %}
+        Nie masz uprawnień do korzystania z tej funkcji
+    {% endif %}
 {% endblock %}

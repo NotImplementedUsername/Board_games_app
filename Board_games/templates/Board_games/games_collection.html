@@ -1,0 +1,30 @@
+{% extends "Board_games/base.html" %}
+
+{% block content %}
+    <h2>Moja kolekcja gier</h2>
+    {% if user.is_authenticated %}
+        {% if list.count == 0 %}
+            Nie znaleziono żadnych gier
+        {% else %}
+            {% for collection in user.gamescollection_set.all %}
+                <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-start col-sm-6">
+                            <div class="col-7" >
+                                  <div class="fw-bold" >
+                                      <a href="{% url 'board_games' id=collection.game_id %}">{{ collection.game.title }}</a>
+                                  </div>
+                            </div>
+                            <div class="float-end" >
+                                  <div class="fw-bold" >
+                                      <a>od {{ collection.purchase_date }}</a>
+                                  </div>
+                            </div>
+                        </li>
+                </ul>
+
+            {% endfor %}
+        {% endif %}
+    {% else %}
+        Nie masz uprawnień do korzystania z tej funkcji
+    {% endif %}
+{% endblock %}
