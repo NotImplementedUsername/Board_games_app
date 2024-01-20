@@ -63,7 +63,9 @@ def register(response):
         form = RegisterForm(response.POST)
         if form.is_valid():
             form.save()
-        return render(response, 'Board_games/error.html', {"message": "Błąd rejestracji"})
+            return HttpResponseRedirect('')
+        else:
+            return render(response, 'Board_games/error.html', {"message": "Błąd rejestracji"})
     else:
         form = RegisterForm()
 
