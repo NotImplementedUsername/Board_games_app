@@ -9,21 +9,21 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = Users
-        fields = ("nickname", "role", )
+        fields = ("username", "role", )
 
 
 class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = Users
-        fields = ("nickname", "role",)
+        fields = ("username", "role",)
 
 class RegisterForm(UserCreationForm):
 
     class Meta:
         model = Users
-        fields = ["nickname", "first_name", "last_name", "email", "password1", "password2"]
-        labels = {"nickname": "Nazwa użytkownika", "first_name": "Imię", "last_name": "Nazwisko"}
+        fields = ["username", "first_name", "last_name", "email", "password1", "password2"]
+        labels = {"username": "Nazwa użytkownika", "first_name": "Imię", "last_name": "Nazwisko"}
 
 class AddGameForm(forms.Form):
     title = forms.CharField(label="Tytuł", max_length=200, required=True)

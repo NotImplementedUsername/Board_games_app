@@ -24,7 +24,8 @@ def board_games(response, id):
     game = BoardGames.objects.get(id=id)
     if response.user.is_authenticated:
         is_game_in_collection = response.user.gamescollection_set.filter(game_id=game.id).exists()
-        return render(response, "Board_games/board_games.html", {"game": game, "is_game_in_collection": is_game_in_collection})
+        is_comment_exists = response.user.comments_set.filter(game_id=game.id).exists()
+        return render(response, "Board_games/board_games.html", {"game": game, "is_game_in_collection": is_game_in_collection, "is_comment_exists": is_comment_exists})
     return render(response, "Board_games/board_games.html",{"game": game})
 
 def add_game(response):
@@ -62,7 +63,7 @@ def register(response):
         form = RegisterForm(response.POST)
         if form.is_valid():
             form.save()
-        return redirect('/')
+        return render(response, 'Board_games/error.html', {"message": "Jest już taki użytkownik"})
     else:
         form = RegisterForm()
 
@@ -88,7 +89,11 @@ def add_comment(response, game_id):
         form = AddCommentForm()
 
     game = BoardGames.objects.get(id=game_id)
-    return render(response, "Board_games/add_comment.html", {"form": form, "game": game})
+    if_exist = response.user.comments_set.filter(game_id=game_id).exists()
+    if if_exist:
+        return render(response, 'Board_games/error.html', {"message": "Już dodałeś opinię dla tej gry"})
+    return render(response, "Board_games/add_comment.html", {"form": form, "game": game,
+                                                             "if_exist": if_exist})
 
 
 def add_to_collection(response, game_id):

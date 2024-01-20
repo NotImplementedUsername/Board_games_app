@@ -17,14 +17,13 @@ class Roles(models.Model):
 
 
 class Users(AbstractUser):
-    nickname = models.CharField(max_length=32)
     first_name = models.CharField(max_length=32, blank=True, null=True)
     last_name = models.CharField(max_length=32, blank=True, null=True)
     email = models.EmailField(unique=True)
     role = models.ForeignKey(Roles, on_delete=models.PROTECT, db_column='role_id')
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['nickname', 'role']
+    REQUIRED_FIELDS = ['username', 'role']
 
     def __str__(self):
         return self.email
@@ -53,10 +52,9 @@ class GamesCollection(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='user_id')
     purchase_date = models.DateField(blank=True, null=True)
 
-    UniqueConstraint(fields=['game', 'user'], name='unique_collection')
-
     class Meta:
         db_table = 'Games_collection'
+        constraints = [UniqueConstraint(fields=['game', 'user'], name='unique_collection')]
 
 
 class Comments(models.Model):
