@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 from django.db.models import UniqueConstraint, CheckConstraint, Q
 
@@ -20,7 +20,8 @@ class Users(AbstractUser):
     first_name = models.CharField(max_length=32, blank=True, null=True)
     last_name = models.CharField(max_length=32, blank=True, null=True)
     email = models.EmailField(unique=True)
-    role = models.ForeignKey(Roles, on_delete=models.PROTECT, db_column='role_id')
+    role = models.ForeignKey(Roles, on_delete=models.PROTECT, db_column='role_id', default=1)
+    groups = models.ManyToManyField(Group, related_name='user_groups', blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'role']
