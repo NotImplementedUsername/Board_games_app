@@ -171,7 +171,7 @@ class FunctionalTests(LiveServerTestCase):
         user = Users.objects.filter(username="testuser1")
         game = BoardGames.objects.filter(id=1)
         self.assertFalse(Comments.objects.filter(game=game, user=user).exist())
-        
+
         self.selenium.get(self.live_server_url + 'board_games/1')
 
         add_to_collection_button = self.selenium.find_element("name", "add_comment")
